@@ -1,0 +1,13 @@
+body {
+    background-image: url(/img/congruent_outline.png);
+}
+
+.center-block {
+    float: none;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+.jumbotron{
+    background-color: #cb79e6;
+}
