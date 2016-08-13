@@ -29,8 +29,12 @@ import java.util.Objects;
 public class CategoryController extends BaseController {
     private static final String BASE_REDIRECT_URL = "redirect:/admin/category";
 
+    private final CategoryService categoryService;
+
     @Autowired
-    private CategoryService categoryService;
+    public CategoryController(CategoryService categoryService) {
+        this.categoryService = categoryService;
+    }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String index(Model model) {
@@ -90,8 +94,9 @@ public class CategoryController extends BaseController {
     }
 
     @RequestMapping(value = "", method = RequestMethod.DELETE)
-    public String doDelete(@RequestParam("id") long id) {
+    public String doDelete(@RequestParam("id") long id, RedirectAttributes attributes) {
         categoryService.delete(id);
+        success(attributes, "删除成功");
         return BASE_REDIRECT_URL;
     }
 }

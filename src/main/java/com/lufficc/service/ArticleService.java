@@ -7,7 +7,6 @@ import com.lufficc.model.form.ArticleForm;
 import com.lufficc.model.support.ArticleStatus;
 import com.lufficc.repository.ArticleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,16 +19,19 @@ import java.util.List;
  */
 @Service
 public class ArticleService {
-    @Autowired
-    private ArticleRepository articleRepository;
+    private final ArticleRepository articleRepository;
+
+    private final CategoryService categoryService;
+
+    private final FolderService folderService;
 
     @Autowired
-    private CategoryService categoryService;
+    public ArticleService(ArticleRepository articleRepository, FolderService folderService, CategoryService categoryService) {
+        this.articleRepository = articleRepository;
+        this.folderService = folderService;
+        this.categoryService = categoryService;
+    }
 
-    @Autowired
-    private FolderService folderService;
-
-    @Cacheable("")
     public Page<Article> getPageableArticles(Pageable pageable) {
         System.out.println("getPageableArticles");
         PageRequest pageRequest = new PageRequest(

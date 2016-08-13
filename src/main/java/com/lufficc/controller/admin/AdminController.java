@@ -16,17 +16,21 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 @RequestMapping("admin")
 public class AdminController {
-    @Autowired
-    private ArticleService articleService;
+    private final ArticleService articleService;
+
+    private final CategoryService categoryService;
+
+    private final FolderService folderService;
+
+    private final UserService userService;
 
     @Autowired
-    private CategoryService categoryService;
-
-    @Autowired
-    private FolderService folderService;
-
-    @Autowired
-    private UserService userService;
+    public AdminController(CategoryService categoryService, UserService userService, ArticleService articleService, FolderService folderService) {
+        this.categoryService = categoryService;
+        this.userService = userService;
+        this.articleService = articleService;
+        this.folderService = folderService;
+    }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String index(Model model) {

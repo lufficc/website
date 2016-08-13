@@ -15,8 +15,12 @@ import java.util.List;
  */
 @Service
 public class CategoryService {
+    private final CategoryRepository categoryRepository;
+
     @Autowired
-    private CategoryRepository categoryRepository;
+    public CategoryService(CategoryRepository categoryRepository) {
+        this.categoryRepository = categoryRepository;
+    }
 
     public Page<Category> getPageableCategories(Pageable pageable) {
         return categoryRepository.findAll(pageable);

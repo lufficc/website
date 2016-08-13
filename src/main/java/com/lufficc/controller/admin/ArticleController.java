@@ -101,8 +101,9 @@ public class ArticleController extends BaseController {
 
 
     @RequestMapping(value = "", method = RequestMethod.DELETE)
-    public String doDelete(@RequestParam("id") long id) {
+    public String doDelete(@RequestParam("id") long id, RedirectAttributes attributes) {
         articleService.delete(id);
+        success(attributes, "删除成功");
         return "redirect:/admin/article";
     }
 

@@ -16,8 +16,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Transactional
 @RequestMapping("admin/user")
 public class UserController extends BaseController {
+    private final UserService userService;
+
     @Autowired
-    private UserService userService;
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String index(Model model) {

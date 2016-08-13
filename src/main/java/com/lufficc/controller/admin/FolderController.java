@@ -71,8 +71,9 @@ public class FolderController extends BaseController {
     }
 
     @RequestMapping(value = "", method = RequestMethod.DELETE)
-    public String doDelete(@RequestParam("id") long id) {
+    public String doDelete(@RequestParam("id") long id, RedirectAttributes attributes) {
         folderService.delete(id);
+        success(attributes, "删除成功");
         return BASE_REDIRECT_URL;
     }
 

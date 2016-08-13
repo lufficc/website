@@ -85,6 +85,7 @@
             </div>
         </div>
         <br>
+        <input type="hidden" name="MAX_FILE_SIZE" value="4048000"/>
         <div class="col-lg-offset-5 col-lg-offset-5 col-lg-12 col-md-12 col-sm-12">
             <div class=" input-group">
                 <button type="submit" class="btn btn-success">创建</button>
