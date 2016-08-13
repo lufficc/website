@@ -1,14 +1,13 @@
 package com.lufficc.controller.admin;
 
+import com.lufficc.api.exception.NotFoundException;
 import com.lufficc.controller.BaseController;
 import com.lufficc.model.Article;
-import com.lufficc.model.Category;
-import com.lufficc.model.Folder;
 import com.lufficc.model.form.ArticleForm;
-import com.lufficc.model.support.ArticleStatus;
 import com.lufficc.service.ArticleService;
 import com.lufficc.service.CategoryService;
 import com.lufficc.service.FolderService;
+import com.lufficc.util.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,16 +32,20 @@ import java.io.IOException;
 public class ArticleController extends BaseController {
     private static final String BASE_REDIRECT_URL = "redirect:/admin/article";
 
-    @Autowired
-    private ArticleService articleService;
+    private final ArticleService articleService;
+
+    private final CategoryService categoryService;
+
+    private final FolderService folderService;
 
     @Autowired
-    private CategoryService categoryService;
+    public ArticleController(CategoryService categoryService, ArticleService articleService, FolderService folderService) {
+        this.categoryService = categoryService;
+        this.articleService = articleService;
+        this.folderService = folderService;
+    }
 
-    @Autowired
-    private FolderService folderService;
-
-    @RequestMapping(value = "", method = RequestMethod.GET)
+    @RequestMapping(value = "", method = RequestMethod.GET, name = "")
     public String index(Model model) {
         model.addAttribute("articles", articleService.findAll());
         return "admin/article/index";
@@ -91,9 +94,9 @@ public class ArticleController extends BaseController {
             danger(attributes, "文件解析出错");
             return BASE_REDIRECT_URL + "/create";
         }
-        createArticle(articleForm, md);
+        articleService.create(articleForm, md);
         success(attributes, "创建成功");
-        return "redirect:/";
+        return BASE_REDIRECT_URL;
     }
 
 
@@ -105,8 +108,9 @@ public class ArticleController extends BaseController {
 
 
     @RequestMapping(value = "update/{id:[0-9]+}", method = RequestMethod.GET)
-    public String update(@PathVariable("id") long id, Model model) {
+    public String update(@PathVariable("id") long id, Model model) throws NotFoundException {
         Article article = articleService.findOne(id);
+        Utils.checkExists(article);
         model.addAttribute("articleForm", ArticleForm.fromArticle(article));
         model.addAttribute("id", article.getId());
         model.addAttribute("md_content", article.getMarkdown());
@@ -131,49 +135,9 @@ public class ArticleController extends BaseController {
             danger(attributes, "md内容不能为空");
             return BASE_REDIRECT_URL + "/update/" + id;
         }
-        Article oldArticle = articleService.findOne(id);
-        oldArticle = generateArticle(oldArticle, articleForm);
-        oldArticle.setMarkdown(md_content);
-        articleService.save(oldArticle);
-
+        articleService.update(id, articleForm, md_content);
         success(attributes, "修改成功");
-        return "redirect:/";
+        return BASE_REDIRECT_URL;
     }
 
-    private void createArticle(ArticleForm articleForm, String md) {
-        Article article = generateArticle(null, articleForm);
-        article.setMarkdown(md);
-        articleService.save(article);
-    }
-
-    private Article generateArticle(Article article, ArticleForm articleForm) {
-        Category category = categoryService.findByName(articleForm.getCategory());
-        if (article == null)
-            article = new Article(
-                    articleForm.getTitle(),
-                    articleForm.getDescription(),
-                    articleForm.getAuthor(),
-                    articleForm.getOriginUrl()
-            );
-        else {
-            article.setTitle(articleForm.getTitle());
-            article.setDescription(articleForm.getDescription());
-            article.setAuthor(articleForm.getAuthor());
-            article.setOriginUrl(articleForm.getOriginUrl());
-        }
-        article.setCategory(category);
-        article.setArticleStatus(
-                ArticleStatus.DRAFT.toString().equals(
-                        articleForm.getArticleStatus()) ?
-                        ArticleStatus.DRAFT : ArticleStatus.PUBLISHED
-        );
-        if (articleForm.getFolder() != -1) {
-            Folder folder = folderService.findOne(articleForm.getFolder());
-            article.setFolder(folder);
-            article.setCategory(folder.getCategory());
-        } else {
-            article.setFolder(null);
-        }
-        return article;
-    }
 }

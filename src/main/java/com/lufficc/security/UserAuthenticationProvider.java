@@ -16,11 +16,9 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class UserAuthenticationProvider extends AbstractUserDetailsAuthenticationProvider {
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-
 
     /**
      * add other check to the user
@@ -32,14 +30,9 @@ public class UserAuthenticationProvider extends AbstractUserDetailsAuthenticatio
 
     @Override
     protected void additionalAuthenticationChecks(UserDetails userDetails, UsernamePasswordAuthenticationToken token) throws AuthenticationException {
-        logger.info("> additionalAuthenticationChecks");
-        logger.info("username:" + userDetails.getUsername());
-        logger.info("password:" + userDetails.getPassword());
-        logger.info("Credentials:" + token.getCredentials());
         if (token.getCredentials() == null || userDetails.getPassword() == null) {
             throw new BadCredentialsException("Credentials may not be null.");
         }
-
         if (!passwordEncoder.matches((String) token.getCredentials(),
                 userDetails.getPassword())) {
             throw new BadCredentialsException("Invalid credentials.");
@@ -51,20 +44,7 @@ public class UserAuthenticationProvider extends AbstractUserDetailsAuthenticatio
 
     @Override
     protected UserDetails retrieveUser(String username, UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) throws AuthenticationException {
-        logger.info(">>lcc retrieveUser");
-
-        //return username
-        logger.info(">> :" + usernamePasswordAuthenticationToken.getName());
-        //return password
-        logger.info(">> :" + usernamePasswordAuthenticationToken.getCredentials());
-        //return username
-        logger.info(">> :" + usernamePasswordAuthenticationToken.getPrincipal());
-
-
-        UserDetails userDetails = accountUserDetailsService
+        return accountUserDetailsService
                 .loadUserByUsername(username);
-
-        logger.info("<< retrieveUser");
-        return userDetails;
     }
 }

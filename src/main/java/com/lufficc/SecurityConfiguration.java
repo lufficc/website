@@ -43,10 +43,9 @@ public class SecurityConfiguration {
         @Override
         protected void configure(HttpSecurity http) throws Exception {
             http.authorizeRequests()
-                    .antMatchers("/register", "/").permitAll()
                     .antMatchers("/img/**", "/js/**", "/css/**").permitAll()
                     .antMatchers("/admin/**").hasRole("ADMIN")
-                    .anyRequest().authenticated()
+                    .anyRequest().permitAll()
                     .and()
                     .httpBasic()
                     .and()

@@ -1,9 +1,11 @@
 package com.lufficc.controller.admin;
 
+import com.lufficc.api.exception.NotFoundException;
 import com.lufficc.controller.BaseController;
 import com.lufficc.model.Category;
 import com.lufficc.model.form.CategoryForm;
 import com.lufficc.service.CategoryService;
+import com.lufficc.util.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,16 +55,16 @@ public class CategoryController extends BaseController {
             warning(attributes, categoryForm.getName() + "已经存在");
             return BASE_REDIRECT_URL + "/create";
         }
+        categoryService.create(categoryForm);
         success(attributes, "分类" + categoryForm.getName() + "创建成功");
-        Category category = new Category(categoryForm.getName().trim(), categoryForm.getDescription().trim());
-        categoryService.save(category);
-        return "redirect:/";
+        return BASE_REDIRECT_URL;
     }
 
 
     @RequestMapping(value = "update/{id:[0-9]+}", method = RequestMethod.GET)
-    public String update(@PathVariable("id") long id, Model model) {
+    public String update(@PathVariable("id") long id, Model model) throws NotFoundException {
         Category category = categoryService.findOne(id);
+        Utils.checkExists(category);
         model.addAttribute("categoryForm", category);
         model.addAttribute("id", id);
         return "admin/category/update";
@@ -82,10 +84,7 @@ public class CategoryController extends BaseController {
             warning(attributes, categoryForm.getName() + "已经存在");
             return BASE_REDIRECT_URL + "/update/" + id;
         }
-
-        category.setName(categoryForm.getName());
-        category.setDescription(categoryForm.getDescription());
-        categoryService.save(category);
+        categoryService.update(category, categoryForm);
         success(attributes, "分类" + categoryForm.getName() + "修改成功");
         return BASE_REDIRECT_URL;
     }

@@ -1,11 +1,12 @@
 package com.lufficc.controller.admin;
 
+import com.lufficc.api.exception.NotFoundException;
 import com.lufficc.controller.BaseController;
-import com.lufficc.model.Category;
 import com.lufficc.model.Folder;
 import com.lufficc.model.form.FolderForm;
 import com.lufficc.service.CategoryService;
 import com.lufficc.service.FolderService;
+import com.lufficc.util.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,11 +30,15 @@ import java.util.Objects;
 public class FolderController extends BaseController {
     private static final String BASE_REDIRECT_URL = "redirect:/admin/folder";
 
-    @Autowired
-    private FolderService folderService;
+    private final FolderService folderService;
+
+    private final CategoryService categoryService;
 
     @Autowired
-    private CategoryService categoryService;
+    public FolderController(FolderService folderService, CategoryService categoryService) {
+        this.folderService = folderService;
+        this.categoryService = categoryService;
+    }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String index(Model model) {
@@ -59,10 +64,8 @@ public class FolderController extends BaseController {
             warning(attributes, folderForm.getName() + "已经存在");
             return BASE_REDIRECT_URL + "/create";
         }
-        Category category = categoryService.findByName(folderForm.getCategory());
-        Folder folder = new Folder(folderForm.getName().trim(), folderForm.getDescription().trim());
-        folder.setCategory(category);
-        folderService.save(folder);
+        folderService.create(folderForm);
+
         success(attributes, "文件夹" + folderForm.getName() + "创建成功");
         return BASE_REDIRECT_URL;
     }
@@ -74,8 +77,9 @@ public class FolderController extends BaseController {
     }
 
     @RequestMapping(value = "update/{id:[0-9]+}", method = RequestMethod.GET)
-    public String update(@PathVariable("id") long id, Model model) {
+    public String update(@PathVariable("id") long id, Model model) throws NotFoundException {
         Folder folder = folderService.findOne(id);
+        Utils.checkExists(folder);
         model.addAttribute("folderForm", FolderForm.fromFolder(folder));
         model.addAttribute("categories", categoryService.findAll());
         model.addAttribute("id", id);
@@ -97,11 +101,8 @@ public class FolderController extends BaseController {
             warning(attributes, folderForm.getName() + "已经存在");
             return BASE_REDIRECT_URL + "/update/" + id;
         }
-        Category category = categoryService.findByName(folderForm.getCategory());
-        folder.setName(folderForm.getName());
-        folder.setDescription(folderForm.getDescription());
-        folder.setCategory(category);
-        folderService.save(folder);
+        folderService.update(folder, folderForm);
+
         success(attributes, "文件夹" + folderForm.getName() + "修改成功");
         return BASE_REDIRECT_URL;
     }

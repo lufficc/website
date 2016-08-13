@@ -11,6 +11,7 @@
             <a class="navbar-brand" href="/admin">后台管理</a>
         </div>
         <div class="collapse navbar-collapse" id="blog-navbar">
+        <#assign path = springMacroRequestContext.requestUri>
             <ul class="nav navbar-nav">
                 <li class="${(path == "/admin/article/create")?string("active","")}">
                     <a href="/admin/article/create">新的文章</a>
