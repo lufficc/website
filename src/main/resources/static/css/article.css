@@ -2,14 +2,14 @@ body {
     /*width: 45em;*/
     /*border: 1px solid #ddd;*/
     /*outline: 1300px solid #fff;*/
-    margin: 10px auto;
+    margin: 0 auto;
     /*background-color: #fcfaf2*/
 }
 
-body .markdown-body
+/*body .markdown-body
 {
     padding: 15px 15px 15px;
-}
+}*/
 
 @font-face {
     font-family: fontawesome-mini;
