@@ -14,7 +14,7 @@
 </head>
 <body class="hold-transition skin-blue">
     <#include "nav.ftl">
-<div class="container">
+<div class="container-fluid">
     <#include "../../partials/error.ftl"/>
         <#nested>
         <#include "footer.ftl">

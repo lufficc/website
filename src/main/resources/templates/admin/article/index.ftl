@@ -23,8 +23,12 @@
             <tbody>
                 <#list articles as article>
                 <tr>
-                    <td>${article.title}</td>
-                    <td>${article.description}</td>
+                    <td><a href="/admin/article/${article.id}">${article.title}</a></td>
+                    <#if (article.description)?? && ((article.description)?length > 38) >
+                        <td>${article.description?substring(0,38)}...</td>
+                    <#else>
+                        <td>${(article.description)!""}</td>
+                    </#if>
                     <td>${article.author}</td>
                     <td>${(article.folder.name)!"无"}</td>
                     <td>${(article.category.name)!"无"}</td>
