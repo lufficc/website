@@ -9,7 +9,7 @@ import com.lufficc.repository.ArticleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,12 +32,12 @@ public class ArticleService {
         this.categoryService = categoryService;
     }
 
-    public Page<Article> getPageableArticles(Pageable pageable) {
+    public Page<Article> getPageableArticles(int page, int size, Sort sort) {
         System.out.println("getPageableArticles");
         PageRequest pageRequest = new PageRequest(
-                pageable.getPageNumber(),
-                pageable.getPageSize() > 10 ? 10 : pageable.getPageSize(),
-                pageable.getSort()
+                page,
+                size > 10 ? 10 : size,
+                sort
         );
         return articleRepository.findAllPublishedArticles(pageRequest);
     }
