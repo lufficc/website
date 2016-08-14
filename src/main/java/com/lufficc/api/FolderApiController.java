@@ -53,7 +53,7 @@ public class FolderApiController extends BaseApiController {
         return new JsonWrap<>(HttpStatus.OK.value(), "success", folder);
     }
 
-    @RequestMapping(value = "/{folder_id:[0-9+]/article}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{folder_id:[0-9]+}/article", method = RequestMethod.GET)
     public JsonWrap<List<Article>> getArticlesByFolder(@PathVariable("folder_id") Long folder_id) {
         return new JsonWrap<>(HttpStatus.OK.value(), "success", articleService.getArticleByFolder(folder_id));
     }
