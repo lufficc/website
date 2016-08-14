@@ -33,7 +33,6 @@ public class ArticleService {
     }
 
     public Page<Article> getPageableArticles(int page, int size, Sort sort) {
-        System.out.println("getPageableArticles");
         PageRequest pageRequest = new PageRequest(
                 page,
                 size > 10 ? 10 : size,
@@ -41,6 +40,16 @@ public class ArticleService {
         );
         return articleRepository.findAllPublishedArticles(pageRequest);
     }
+
+    public Page<Article> getPageableArticlesByCategory(Long category, int page, int size, Sort sort) {
+        PageRequest pageRequest = new PageRequest(
+                page,
+                size > 10 ? 10 : size,
+                sort
+        );
+        return articleRepository.findAllPublishedArticlesByCategory(categoryService.findOne(category), pageRequest);
+    }
+
 
     public Article create(ArticleForm articleForm, String md) {
         Article article = generateArticle(null, articleForm);

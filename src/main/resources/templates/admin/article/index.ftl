@@ -34,7 +34,7 @@
                     <td>${(article.category.name)!"无"}</td>
                     <td>${article.createdAt}</td>
                     <td>
-                        <div class="btn-group">
+                        <div class="btn-group center-block">
                             <a href="/admin/article/update/${article.id}" role="button"
                                class="btn btn-sm btn-default"><i class="fa fa-edit"></i></a>
                             <button type="button" class="btn btn-sm btn-default" data-toggle="modal"

@@ -24,16 +24,25 @@ import java.util.List;
 @Transactional
 @RequestMapping("api/article")
 public class ArticleApiController extends BaseApiController {
+    private final ArticleService articleService;
+
     @Autowired
-    private ArticleService articleService;
+    public ArticleApiController(ArticleService articleService) {
+        this.articleService = articleService;
+    }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public PagedJson<List<Article>> getArticles(Pageable pageable) {
-        Page<Article> articles = articleService.getPageableArticles(pageable);
+        Page<Article> articles = articleService.getPageableArticles(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                pageable.getSort()
+        );
         PagedJson<List<Article>> pagedJson = new PagedJson<>(HttpStatus.OK.value(), "success", articles.getContent());
         pagedJson.fillData(articles);
         return pagedJson;
     }
+
 
     @RequestMapping(value = "/{id:[0-9]+]}", method = RequestMethod.GET)
     public JsonWrap<Article> getArticle(@PathVariable("id") Long id) throws NotFoundException {

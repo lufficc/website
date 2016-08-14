@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +20,7 @@ public class Category extends BaseModel {
     @Column(nullable = false)
     private String description;
 
-    @OneToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Article> articles = new ArrayList<Article>();
 
@@ -31,7 +32,7 @@ public class Category extends BaseModel {
         this.folders = folders;
     }
 
-    @OneToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Folder> folders = new ArrayList<>();
 
@@ -57,6 +58,11 @@ public class Category extends BaseModel {
 
     public void setArticles(List<Article> articles) {
         this.articles = articles;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return this == o || !(o == null || getClass() != o.getClass()) && ((Category) o).getId().equals(getId());
     }
 
     public Category() {

@@ -28,7 +28,7 @@
                     <td>${(category.folders?size)!"0"}</td>
                     <td>${category.createdAt}</td>
                     <td>
-                        <div class="btn-group">
+                        <div class="btn-group center-block">
                             <a href="/admin/category/update/${category.id}" role="button"
                                class="btn btn-sm btn-default"><i class="fa fa-edit"></i></a>
                             <button type="button" class="btn btn-sm btn-default" data-toggle="modal"

@@ -1,6 +1,7 @@
 package com.lufficc.repository;
 
 import com.lufficc.model.Article;
+import com.lufficc.model.Category;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,6 +15,9 @@ import org.springframework.stereotype.Repository;
 public interface ArticleRepository extends JpaRepository<Article, Long> {
     @Query("select a from Article a where a.articleStatus = 'Published' order by a.createdAt desc")
     Page<Article> findAllPublishedArticles(Pageable pageable);
+
+    @Query("select a from Article a where a.articleStatus = 'Published' and a.category = ?1 order by a.createdAt desc")
+    Page<Article> findAllPublishedArticlesByCategory(Category category, Pageable pageable);
 
     @Query("select count (a) from Article a where a.articleStatus = 'Published'")
     public long countPublished();

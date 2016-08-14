@@ -24,7 +24,7 @@
                     <td>${user.email}</td>
                     <td>${user.createdAt}</td>
                     <td>
-                        <div class="btn-group">
+                        <div class="btn-group center-block">
                             <a href="/admin/user/update/${user.id}" role="button"
                                class="btn btn-sm btn-default"><i class="fa fa-edit"></i></a>
                             <button type="button" class="btn btn-sm btn-default" data-toggle="modal"

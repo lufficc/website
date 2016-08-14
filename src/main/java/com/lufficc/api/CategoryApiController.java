@@ -3,7 +3,9 @@ package com.lufficc.api;
 import com.lufficc.api.exception.NotFoundException;
 import com.lufficc.api.model.JsonWrap;
 import com.lufficc.api.model.PagedJson;
+import com.lufficc.model.Article;
 import com.lufficc.model.Category;
+import com.lufficc.service.ArticleService;
 import com.lufficc.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -25,14 +27,32 @@ import java.util.List;
 @RequestMapping("api/category")
 public class CategoryApiController extends BaseApiController {
 
+    private final CategoryService categoryService;
+    private final ArticleService articleService;
+
     @Autowired
-    private CategoryService categoryService;
+    public CategoryApiController(CategoryService categoryService, ArticleService articleService) {
+        this.categoryService = categoryService;
+        this.articleService = articleService;
+    }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public PagedJson<List<Category>> getCategories(Pageable pageable) {
-        Page<Category> categories = categoryService.getPageableCategories(pageable);
-        PagedJson<List<Category>> pagedJson = new PagedJson<>(HttpStatus.OK.value(), "success", categories.getContent());
-        pagedJson.fillData(categories);
+    public JsonWrap<List<Category>> getCategories() {
+        List<Category> categories = categoryService.findAll();
+        return new JsonWrap<>(HttpStatus.OK.value(), "success", categories);
+    }
+
+
+    @RequestMapping(value = "/{category_id:[0-9]+}/article", method = RequestMethod.GET)
+    public PagedJson<List<Article>> getArticlesByCategory(@PathVariable("category_id") Long category_id, Pageable pageable) {
+        Page<Article> articles = articleService.getPageableArticlesByCategory(
+                category_id,
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                pageable.getSort()
+        );
+        PagedJson<List<Article>> pagedJson = new PagedJson<>(HttpStatus.OK.value(), "success", articles.getContent());
+        pagedJson.fillData(articles);
         return pagedJson;
     }
 
