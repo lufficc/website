@@ -32,6 +32,7 @@ public class FolderService {
         return save(folder);
     }
 
+
     public Folder update(Folder oldFolder, FolderForm folderForm) {
         Category category = categoryService.findByName(folderForm.getCategory());
         oldFolder.setName(folderForm.getName());

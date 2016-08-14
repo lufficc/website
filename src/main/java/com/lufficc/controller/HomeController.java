@@ -3,6 +3,7 @@ package com.lufficc.controller;
 import com.lufficc.model.User;
 import com.lufficc.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,7 +23,7 @@ public class HomeController extends BaseController {
     private UserService userService;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public String index() {
+    public String index(Pageable pageable) {
         return "index";
     }
 

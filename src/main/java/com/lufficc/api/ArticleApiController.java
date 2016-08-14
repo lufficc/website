@@ -51,4 +51,5 @@ public class ArticleApiController extends BaseApiController {
             throw new NotFoundException("article with id " + id + " not fount");
         return new JsonWrap<>(HttpStatus.OK.value(), "success", article);
     }
+
 }

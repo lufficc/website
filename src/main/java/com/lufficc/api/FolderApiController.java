@@ -3,7 +3,9 @@ package com.lufficc.api;
 import com.lufficc.api.exception.NotFoundException;
 import com.lufficc.api.model.JsonWrap;
 import com.lufficc.api.model.PagedJson;
+import com.lufficc.model.Article;
 import com.lufficc.model.Folder;
+import com.lufficc.service.ArticleService;
 import com.lufficc.service.FolderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -25,11 +27,18 @@ import java.util.List;
 @RequestMapping("api/folder")
 public class FolderApiController extends BaseApiController {
 
+    private final FolderService folderService;
+
+    private final ArticleService articleService;
+
     @Autowired
-    private FolderService folderService;
+    public FolderApiController(FolderService folderService, ArticleService articleService) {
+        this.folderService = folderService;
+        this.articleService = articleService;
+    }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public PagedJson<List<Folder>> getCategories(Pageable pageable) {
+    public PagedJson<List<Folder>> getFolders(Pageable pageable) {
         Page<Folder> folders = folderService.getPageableCategories(pageable);
         PagedJson<List<Folder>> pagedJson = new PagedJson<>(HttpStatus.OK.value(), "success", folders.getContent());
         pagedJson.fillData(folders);
@@ -37,10 +46,15 @@ public class FolderApiController extends BaseApiController {
     }
 
     @RequestMapping(value = "/{id:[0-9]+]}", method = RequestMethod.GET)
-    public JsonWrap<Folder> getCategory(@PathVariable("id") Long id) throws NotFoundException {
+    public JsonWrap<Folder> getFolder(@PathVariable("id") Long id) throws NotFoundException {
         Folder folder = folderService.findOne(id);
         if (folder == null)
             throw new NotFoundException("article with id " + id + " not fount");
         return new JsonWrap<>(HttpStatus.OK.value(), "success", folder);
+    }
+
+    @RequestMapping(value = "/{folder_id:[0-9+]/article}", method = RequestMethod.GET)
+    public JsonWrap<List<Article>> getArticlesByFolder(@PathVariable("folder_id") Long folder_id) {
+        return new JsonWrap<>(HttpStatus.OK.value(), "success", articleService.getArticleByFolder(folder_id));
     }
 }

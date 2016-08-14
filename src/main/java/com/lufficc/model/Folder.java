@@ -35,6 +35,16 @@ public class Folder extends BaseModel {
         this.description = description;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Folder folder = (Folder) o;
+        return folder.getId().equals(getId());
+
+    }
+
+
     public String getDescription() {
         return description;
     }

@@ -50,6 +50,11 @@ public class ArticleService {
         return articleRepository.findAllPublishedArticlesByCategory(categoryService.findOne(category), pageRequest);
     }
 
+    public List<Article> getArticleByFolder(Long folder_id)
+    {
+        return articleRepository.findArticlesByFolder(folderService.findOne(folder_id));
+    }
+
 
     public Article create(ArticleForm articleForm, String md) {
         Article article = generateArticle(null, articleForm);
