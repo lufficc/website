@@ -39,7 +39,7 @@ public class FolderApiController extends BaseApiController {
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public PagedJson<List<Folder>> getFolders(Pageable pageable) {
-        Page<Folder> folders = folderService.getPageableCategories(pageable);
+        Page<Folder> folders = folderService.getPageableFolders(pageable.getPageNumber(),pageable.getPageSize(),pageable.getSort());
         PagedJson<List<Folder>> pagedJson = new PagedJson<>(HttpStatus.OK.value(), "success", folders.getContent());
         pagedJson.fillData(folders);
         return pagedJson;

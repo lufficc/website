@@ -33,6 +33,5 @@ public class WebsiteApplication implements CommandLineRunner {
         if (roleRepository.findByCode(Role.ROLE_SYSADMIN.getCode()) == null) {
             roleRepository.save(Role.ROLE_SYSADMIN);
         }
-
     }
 }

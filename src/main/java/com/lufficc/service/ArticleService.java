@@ -8,6 +8,8 @@ import com.lufficc.model.form.ArticleForm;
 import com.lufficc.model.support.ArticleStatus;
 import com.lufficc.repository.ArticleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -20,6 +22,8 @@ import java.util.List;
  */
 @Service
 public class ArticleService {
+    private static final String CACHE_KEY = "article";
+
     private final ArticleRepository articleRepository;
 
     private final MarkdownService markdownService;
@@ -36,7 +40,9 @@ public class ArticleService {
         this.categoryService = categoryService;
     }
 
+    @Cacheable(CACHE_KEY)
     public Page<Article> getPageableArticles(int page, int size, Sort sort) {
+
         PageRequest pageRequest = new PageRequest(
                 page,
                 size > 10 ? 10 : size,
@@ -44,7 +50,7 @@ public class ArticleService {
         );
         return articleRepository.findAllPublishedArticles(pageRequest);
     }
-
+    @Cacheable(CACHE_KEY)
     public Page<Article> getPageableArticlesByCategory(Long category, int page, int size, Sort sort) {
         PageRequest pageRequest = new PageRequest(
                 page,
@@ -54,12 +60,13 @@ public class ArticleService {
         return articleRepository.findAllPublishedArticlesByCategory(categoryService.findOne(category), pageRequest);
     }
 
+    @Cacheable(value = CACHE_KEY,key = "#folder_id.toString().concat(\"getArticleByFolder\")")
     public List<Article> getArticleByFolder(Long folder_id)
     {
         return articleRepository.findArticlesByFolder(folderService.findOne(folder_id));
     }
 
-
+    @CacheEvict(value = CACHE_KEY,allEntries = true)
     public Article create(ArticleForm articleForm, String md) {
         Article article = generateArticle(null, articleForm);
         Markdown markdown = new Markdown(md);
@@ -68,6 +75,7 @@ public class ArticleService {
         return article;
     }
 
+    @CacheEvict(value = CACHE_KEY,allEntries = true)
     public Article update(Long oldArticleId, ArticleForm articleForm, String md_content) {
         Article oldArticle = findOne(oldArticleId);
         generateArticle(oldArticle, articleForm);
@@ -108,6 +116,7 @@ public class ArticleService {
         return article;
     }
 
+    @CacheEvict(value = CACHE_KEY,allEntries = true)
     public void delete(Long id) {
         articleRepository.delete(id);
     }
@@ -116,15 +125,18 @@ public class ArticleService {
         return articleRepository.findAll();
     }
 
+    @Cacheable(value = CACHE_KEY,key = "#id.toString().concat(\"findOne\")")
     public Article findOne(Long id) {
-        return articleRepository.findOne(id);
+        Article article = articleRepository.findOne(id);
+        article.getMd();
+        return article;
     }
 
-    public Article save(Article article) {
+    private Article save(Article article) {
         return articleRepository.save(article);
     }
 
-    public long count() {
+    public Long count() {
         return articleRepository.count();
     }
 

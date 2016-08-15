@@ -110,7 +110,7 @@ public class Article extends BaseModel implements Serializable {
         this.md = md;
     }
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JsonIgnore
     private Markdown md;
 

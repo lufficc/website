@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class MarkdownService {
+    private static final String CACHE_KEY = "markdown";
+
     private final MarkdownRepository markdownRepository;
 
     @Autowired
