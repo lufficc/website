@@ -8,10 +8,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootApplication
 @EnableTransactionManagement
 @EnableCaching
+@Transactional
 public class WebsiteApplication implements CommandLineRunner {
     @Autowired
     RoleRepository roleRepository;
@@ -31,5 +33,6 @@ public class WebsiteApplication implements CommandLineRunner {
         if (roleRepository.findByCode(Role.ROLE_SYSADMIN.getCode()) == null) {
             roleRepository.save(Role.ROLE_SYSADMIN);
         }
+
     }
 }

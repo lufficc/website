@@ -3,7 +3,6 @@ package com.lufficc.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.lufficc.model.support.ArticleStatus;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -103,18 +102,34 @@ public class Article extends BaseModel implements Serializable {
         this.folder = folder;
     }
 
-    public String getMarkdown() {
-        return markdown;
+    public Markdown getMd() {
+        return md;
     }
 
-    public void setMarkdown(String markdown) {
-        this.markdown = markdown;
+    public void setMd(Markdown md) {
+        this.md = md;
     }
 
-    @Type(type = "text")
-    private String markdown;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Markdown md;
 
     public Article() {
+    }
+
+    @Override
+    public String toString() {
+        return "Article{" +
+                "user=" + user +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", author='" + author + '\'' +
+                ", originUrl='" + originUrl + '\'' +
+                ", articleStatus=" + articleStatus +
+                ", category=" + category +
+                ", folder=" + folder +
+                ", md=" + md +
+                '}';
     }
 
     public Article(String title, String description, String author, String originUrl) {

@@ -55,7 +55,7 @@ public class ArticleController extends BaseController {
     public String show(@PathVariable("id") Long id, Model model) {
         Article article = articleService.findOne(id);
         model.addAttribute("title", article.getTitle());
-        model.addAttribute("content", article.getMarkdown());
+        model.addAttribute("content", article.getMd().getMarkdown());
         return "page/index";
     }
 
@@ -114,7 +114,7 @@ public class ArticleController extends BaseController {
         Utils.checkExists(article);
         model.addAttribute("articleForm", ArticleForm.fromArticle(article));
         model.addAttribute("id", article.getId());
-        model.addAttribute("md_content", article.getMarkdown());
+        model.addAttribute("md_content", article.getMd().getMarkdown());
         model.addAttribute("categories", categoryService.findAll());
         model.addAttribute("folders", folderService.findAll());
         return "admin/article/update";

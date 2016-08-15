@@ -4,6 +4,7 @@ import com.lufficc.api.exception.NotFoundException;
 import com.lufficc.api.model.JsonWrap;
 import com.lufficc.api.model.PagedJson;
 import com.lufficc.model.Article;
+import com.lufficc.model.Markdown;
 import com.lufficc.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -44,12 +45,19 @@ public class ArticleApiController extends BaseApiController {
     }
 
 
-    @RequestMapping(value = "/{id:[0-9]+]}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{id:[0-9]+}", method = RequestMethod.GET)
     public JsonWrap<Article> getArticle(@PathVariable("id") Long id) throws NotFoundException {
         Article article = articleService.findOne(id);
         if (article == null)
             throw new NotFoundException("article with id " + id + " not fount");
         return new JsonWrap<>(HttpStatus.OK.value(), "success", article);
+    }
+
+    @RequestMapping(value = "/{id:[0-9]+}/markdown",method = RequestMethod.GET)
+    public JsonWrap<Markdown> getMarkdown(@PathVariable("id") Long id)
+    {
+        Markdown markdown= articleService.findOne(id).getMd();
+        return new JsonWrap<>(HttpStatus.OK.value(),"success",Markdown.formMarkdown(markdown));
     }
 
 }

@@ -3,7 +3,6 @@ package com.lufficc.controller;
 import com.lufficc.model.User;
 import com.lufficc.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,11 +18,15 @@ public class HomeController extends BaseController {
     /**
      * 未登录的话会有一个AnonymousAuthenticationToken认证
      */
+    private final UserService userService;
+
     @Autowired
-    private UserService userService;
+    public HomeController(UserService userService) {
+        this.userService = userService;
+    }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public String index(Pageable pageable) {
+    public String index() {
         return "index";
     }
 

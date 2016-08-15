@@ -3,6 +3,7 @@ package com.lufficc.service;
 import com.lufficc.model.Article;
 import com.lufficc.model.Category;
 import com.lufficc.model.Folder;
+import com.lufficc.model.Markdown;
 import com.lufficc.model.form.ArticleForm;
 import com.lufficc.model.support.ArticleStatus;
 import com.lufficc.repository.ArticleRepository;
@@ -21,13 +22,16 @@ import java.util.List;
 public class ArticleService {
     private final ArticleRepository articleRepository;
 
+    private final MarkdownService markdownService;
+
     private final CategoryService categoryService;
 
     private final FolderService folderService;
 
     @Autowired
-    public ArticleService(ArticleRepository articleRepository, FolderService folderService, CategoryService categoryService) {
+    public ArticleService(ArticleRepository articleRepository, MarkdownService markdownService, FolderService folderService, CategoryService categoryService) {
         this.articleRepository = articleRepository;
+        this.markdownService = markdownService;
         this.folderService = folderService;
         this.categoryService = categoryService;
     }
@@ -58,7 +62,8 @@ public class ArticleService {
 
     public Article create(ArticleForm articleForm, String md) {
         Article article = generateArticle(null, articleForm);
-        article.setMarkdown(md);
+        Markdown markdown = new Markdown(md);
+        article.setMd(markdownService.save(markdown));
         save(article);
         return article;
     }
@@ -66,7 +71,9 @@ public class ArticleService {
     public Article update(Long oldArticleId, ArticleForm articleForm, String md_content) {
         Article oldArticle = findOne(oldArticleId);
         generateArticle(oldArticle, articleForm);
-        oldArticle.setMarkdown(md_content);
+        Markdown markdown = oldArticle.getMd();
+        markdown.setMarkdown(md_content);
+        oldArticle.setMd(markdownService.save(markdown));
         return save(oldArticle);
     }
 
